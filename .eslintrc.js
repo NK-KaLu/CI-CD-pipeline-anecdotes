@@ -23,11 +23,12 @@ module.exports = {
 		}
 	],
 	'parserOptions': {
-		'ecmaVersion': 'latest',
+		'ecmaVersion': 2018,
 		'sourceType': 'module'
 	},
 	'plugins': [
-		'react'
+		'react',
+		'jest'
 	],
 	'rules': {
 		'indent': [

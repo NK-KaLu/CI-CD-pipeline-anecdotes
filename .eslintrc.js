@@ -33,6 +33,7 @@ module.exports = {
 	'rules': {
 		'react/react-in-jsx-scope': 'off',
 		'react/jsx-filename-extension': [1, { 'extensions': ['.js', '.jsx'] }],
+		'import/no-anonymous-default-export': 'error',
 		'indent': [
 			'error',
 			'tab'

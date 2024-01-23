@@ -28,12 +28,12 @@ module.exports = {
 	},
 	'plugins': [
 		'react',
-		'jest'
+		'jest',
+		'import'  // Added the import plugin here
 	],
 	'rules': {
 		'react/react-in-jsx-scope': 'off',
 		'react/jsx-filename-extension': [1, { 'extensions': ['.js', '.jsx'] }],
-		'import/no-anonymous-default-export': 'error',
 		'indent': [
 			'error',
 			'tab'
@@ -49,7 +49,8 @@ module.exports = {
 		'semi': [
 			'error',
 			'never'
-		]
+		],
+		'import/no-anonymous-default-export': 'error',  // Explicitly set the rule
 	},
 	'settings': {
 		'react': {
@@ -57,5 +58,3 @@ module.exports = {
 		},
 	},
 }
-
-

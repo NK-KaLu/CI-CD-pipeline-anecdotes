@@ -1,149 +1,186 @@
 import { useState, useEffect } from 'react'
-import countryService from './services/countries'
+import personService from './services/people'
+import './index.css'
 
 
 const App = () => {
+  const [people, setPeople] = useState([]) 
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [newFilter, setNewFilter] = useState('')
+  const [notificationMessage, setNotificationMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null)
 
 
-const api_key = process.env.REACT_APP_API_KEY
-const [countries, setCountries] = useState([])
-const [newFilter, setNewFilter] = useState('')
-const[dataFetched, setDataFetched] = useState(false)
-const[weatherData, setWeatherData] = useState({
-  "weather":[
+  useEffect(() => {
+    console.log('effect')
+    personService
+      .getAll()
+      .then(response => {
+        console.log('promise fulfilled')
+        setPeople(response.data)
+      })
+  }, [])
+  console.log('render', people.length, 'people')
+
+
+
+
+  const addName = (event) => {
+    event.preventDefault()
+    console.log('button clicked', event.target)
+
+    const nameObject = {
+      name: newName,
+      number: newNumber
+    }
+    console.log(people.some(e => e.name === nameObject.name))
+    if(nameObject.name.length < 3){setErrorMessage(
+      `Person validation failed: name: '${nameObject.name}' is shorter than the minimum allowed length (3). `)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)
+    }else if(nameObject.number.length < 8){setErrorMessage(
+      `Person validation failed: number: '${nameObject.number}' is shorter than the minimum allowed length (8). `)
+      setTimeout(() => {
+        setErrorMessage(null)
+      }, 5000)}
+    else if(people.some(e => e.name === nameObject.name && newNumber !== ""))
     {
-
-       "description":"overcast clouds",
-       "icon":"04d"
-    }
- ],
- "main":{
-    "temp":-6.55,
- },
- "wind":{
-    "speed":4.63,
- },
- "name":"Tampere",
-})
-
-useEffect(() => {
-  console.log('effect')
-  countryService
-    .getAll()
-    .then(response => {
-      console.log('promise fulfilled')
-      setCountries(response.data)
-    })
-}, [])
-
-
-
-const fetchWeatherData = async(city) => {
-  setDataFetched(true)
-  try{
-  const response = await fetch('https://api.openweathermap.org/data/2.5/weather?q=' 
-  + city +'&appid='+ api_key+'&units=metric');
-  const weatherJson = await response.json();
-  setWeatherData(weatherJson);
-
-  }catch(err){console.log("error in fetching")}
-}
-
-
-
-
-
-const handleFilterChange = (event) => {
-  console.log(event.target.value)
-  setNewFilter(event.target.value)
-  setDataFetched(false)
-}
-
-const FilterCountries = () =>{
-  let filtered = countries.filter(coutry => coutry.name.common.toUpperCase().match(newFilter.toUpperCase()))
-    filtered.map(filteredCountry => console.log(filteredCountry.name.common))
-    
-    if(filtered.length === 1){
-      let Cntr = filtered[0]
-      if(dataFetched === false){
-      fetchWeatherData(Cntr.capital)
-      }
-      return(
-        <div>
-
-          <h2>{Cntr.name.common}</h2>
-
-          <p>capital {Cntr.capital}</p> 
-          <p>area {Cntr.area}</p>
-
-          <h3>languages:</h3>
-
-          {Object.keys(Cntr.languages).map((key, i) => (
-            
-            <ul>
-              <li key={i}>
-                <span>{Cntr.languages[key]}</span>
-              </li>
-            </ul>
-            
-            ))}
-            
-          <img src={Cntr.flags['png']} maxwidth={250} maxheight={250} alt='Flag loading failed...'></img>
-            
-          <h2>Weather in {Cntr.capital}</h2>
-            
-          <p>temperature {weatherData.main.temp} Celcius</p>
-
-          <img src={`http://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}/>
-
-          <p>wind {weatherData.wind.speed} m/s</p>
-       
-          
-          </div>
-
-
+      if(window.confirm(nameObject.name + " is already added to phonebook, replace old number with a new one ?")){
+      let muokattavanId = people.find((people) => {return people.name === nameObject.name})
+      console.log(muokattavanId.id, "  muokattavan id")
+      
+      personService
+      .update(muokattavanId.id, nameObject)
+      .then(response => {
+        console.log(people.map(person => person.id !== muokattavanId.id ? person : response.data))
+      setPeople(people.map(person => person.id !== muokattavanId.id ? person : response.data))
+      setNotificationMessage(
+        `Number for '${nameObject.name}' has been updated.`
       )
+      setTimeout(() => {
+        setNotificationMessage(null)
+      }, 5000)
+      })
+      .catch(error => {
+        setErrorMessage(
+          `information of '${nameObject.name}' has already been deleted from server`
+        )
+        setTimeout(() => {
+          setErrorMessage(null)
+        }, 5000)},
+        setPeople(people.filter(n => n.id !== muokattavanId.id))
+      )}
+    }else if(people.some(e => e.name === nameObject.name)){
+      alert(`${newName} is already added to phonebook`)
+    }else{
+      personService
+      .create(nameObject)
+      .then(response => {
+        console.log(response.data)
+        setPeople(people.concat(response.data))
+        setNotificationMessage(
+          `Added '${nameObject.name}'.`
+        )
+        setTimeout(() => {
+          setNotificationMessage(null)
+        }, 5000)
 
-
+      })
+      .catch(error => {console.log(error.response.data)})
+      
+     
+      console.log(people)
     }
-    else if(filtered.length < 11){
-    return(     
-        filtered.map(filteredCountry => 
-          
-          <ul>
+    
+      
+    setNewName('')
+    setNewNumber('')
+  }
 
-            <p>
-              {filteredCountry.name.common} <button onClick={() => handleClick(filteredCountry.name.common)}>show</button>
-            </p>
-        
-          </ul>
-          
-          )
-    )}else{return(<p>Too many matches, specify another filter</p>)}
-}
+  const handleNameChange = (event) => {
+    console.log(event.target.value)
+    setNewName(event.target.value)
+  }
 
+  const handleNumberChange = (event) => {
+    console.log(event.target.value)
+    setNewNumber(event.target.value)
+  }
 
+  const handleFilterChange = (event) => {
+    console.log(event.target.value)
+    setNewFilter(event.target.value)
+  }
 
-const handleClick  = (filtered) => {
-console.log(filtered)
-setNewFilter(filtered)
+  const handleClick = (Delete) =>{
+    if(window.confirm("Delete " + Delete.name + " ?")){
+    personService
+      .remove(Delete.id)
+      .then(setPeople(people.filter((people) => {return people.id !==Delete.id;})))
+      setNotificationMessage(
+        `'${Delete.name}' has been deleted from phonebook.`
+      )
+      setTimeout(() => {
+        setNotificationMessage(null)
+      }, 5000)
+    }else{console.log("poistaminen peruttiin")} 
+  }
+
+  const Notification = ({ message }) => {
+  if (message === null) {
+    return null
+  }
+  return (
+    <div className="notification">
+      {message}
+    </div>
+  )
+  }
+  const Error = ({ message }) => {
+    if (message === null) {
+      return null
+    }
+    return (
+      <div className="error">
+        {message}
+      </div>
+    )
+  } 
+
   
-}
+
 
 
   return (
     <div>
+      <h2>Phonebook</h2>   
+      
+      <Notification message={notificationMessage} />
+      <Error message={errorMessage} />
+      <p>filter shown with: <input value={newFilter} onChange={handleFilterChange}/></p>
 
-      <p>find countries <input value={newFilter} onChange={handleFilterChange}/></p>
+      <h2>add a new</h2>
+      <form onSubmit={addName}>
+        <p>name: <input value={newName} onChange={handleNameChange}/></p>
+        <p>number: <input value={newNumber} onChange={handleNumberChange}/></p>
+        <button type="submit">add</button>
+      </form>     
+      <h2>Numbers</h2>
+      {people.filter(person => person.name.toUpperCase().match(newFilter.toUpperCase())).map(filteredPerson => (
+      <ul>
 
-      <div>
-        <FilterCountries/>
-    
-
-      </div>
-
+          <p>
+            {filteredPerson.name} {filteredPerson.number} &nbsp; &nbsp;
+            <button onClick={() => handleClick(filteredPerson)}>  Delete </button>
+          </p>
+        
+      </ul>
+      ))}
     </div>
-  );
+  )
+
 }
 
-export default App;
+export default App

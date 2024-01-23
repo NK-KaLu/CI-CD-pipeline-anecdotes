@@ -1,8 +1,0 @@
-PUT  https://osa3-render-test.onrender.com/api/people/6488a603a28fedffd6bb7c03
-
-Content-Type: application/json
-
-{
-    "name": "Jarkoo Shoelace",
-    "number":"142-1223515"
-}

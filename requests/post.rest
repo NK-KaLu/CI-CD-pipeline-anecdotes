@@ -1,7 +1,0 @@
-Post https://osa3-render-test.onrender.com/api/people
-Content-Type: application/json
-
-{
-    "name": "Jarwqwwqwffwkoo Shoawsdelace",
-    "number":"1212122-121322"
-}

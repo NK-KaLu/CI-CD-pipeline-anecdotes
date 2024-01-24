@@ -7,7 +7,7 @@ server.use(middlewares)
 
 // Enable CORS for all routes
 server.use((req, res, next) => {
-	res.header('Access-Control-Allow-Origin', '*') // Change '*' to the actual origin of your React app
+	res.header('Access-Control-Allow-Origin', 'https://anecdotesrender.onrender.com') // Change '*' to the actual origin of your React app
 	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
 	next()
 })

@@ -19,6 +19,7 @@
     "server": "json-server -p3001 --watch db.json",
     "start": "react-scripts start",
     "build": "react-scripts build",
+    "serve": "npx serve -s build",
     "test": "jest",
     "eject": "react-scripts eject",
     "eslint": "eslint src/**/*.{js,jsx}",

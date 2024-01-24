@@ -29,9 +29,12 @@ module.exports = {
 	'plugins': [
 		'react',
 		'jest',
+		'react-hooks',
 		'import'  // Added the import plugin here
 	],
 	'rules': {
+		'react-hooks/rules-of-hooks': 'error',
+		'react-hooks/exhaustive-deps': 'warn',
 		'react/react-in-jsx-scope': 'off',
 		'react/jsx-filename-extension': [1, { 'extensions': ['.js', '.jsx'] }],
 		'indent': [

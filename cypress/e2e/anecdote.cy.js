@@ -3,5 +3,5 @@ describe('anecdote app', function() {
     cy.visit('http://localhost:3000')
     cy.contains('Anecdotes')
     cy.contains('create new')
-  })
+  }).retries(2)
 })

@@ -31,3 +31,29 @@ jobs:
           command: npm run test:e2e
           start: npm run serve
           wait-on: http://localhost:3000
+
+  deploy:
+    name: Deploy app
+    runs-on: ubuntu-20.04
+    needs: simple_deployment_pipeline
+    if: github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip')
+    steps:
+      - name: Deploy to production
+        id: deploy
+        uses: johnbeynon/render-deploy-action@v0.0.8
+        with:
+          service-id: ${{ secrets.SERVICE_ID }}
+          api-key: ${{ secrets.RENDER_API_KEY }}
+
+  tag_release:
+    name: Tag release
+    runs-on: ubuntu-20.04
+    needs: deploy
+    if: github.event_name == 'push' && !contains(join(github.event.commits.*.message, ' '), '#skip')
+    steps:
+      - uses: actions/checkout@v3
+      - name: Bump version and push tag
+        uses: anothrNick/github-tag-action@a2c70ae13a881faf2b4953baaa9e49731997ab36
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      DEFAULT_BUMP: patch

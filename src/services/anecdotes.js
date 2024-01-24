@@ -20,4 +20,5 @@ const addVote = async (content) => {
 	return response.data
 }
 
+
 export default { getAll, createNew, addVote }

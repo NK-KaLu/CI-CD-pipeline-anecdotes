@@ -21,3 +21,13 @@ jobs:
       - name: Check style
         run: npm run eslint -- --fix
       - run: npm run test
+
+      - name: Build application
+        run: npm run build
+
+      - name: e2e tests
+        uses: cypress-io/github-action@v5
+        with:
+          command: npm run test:e2e
+          start: npm run serve
+          wait-on: http://localhost:3000

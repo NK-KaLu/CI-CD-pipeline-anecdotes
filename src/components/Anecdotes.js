@@ -23,10 +23,14 @@ const AnecdoteList = () => {
 
 
 	const vote = async (anecdote) => {
-		dispatch(voteAnecdote(anecdote))
-		dispatch(setupNotification('you voted \'' + anecdote.content + '\' ', 5))
+		try {
+			await dispatch(voteAnecdote(anecdote))
+			await dispatch(setupNotification(`You voted '${anecdote.content}'`, 5))
+		} catch (error) {
+			// Handle the error here
+			console.error('Error in vote function:', error)
+		}
 	}
-
   
 
 

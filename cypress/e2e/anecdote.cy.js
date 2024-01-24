@@ -5,12 +5,10 @@ describe('anecdote app', function () {
 	})
 
 	it('front page can be opened', { retries: 2 }, () => {
-		cy.contains('Anecdotes').then(() => {
-			cy.log('Found "Anecdotes" element successfully')
-		})
+		// Wait for the "Anecdotes" element to be visible
+		cy.contains('Anecdotes').should('be.visible')
   
-		cy.contains('create new').then(() => {
-			cy.log('Found "create new" element successfully')
-		})
+		// Wait for the "create new" element to be visible
+		cy.contains('create new').should('be.visible')
 	})
 })

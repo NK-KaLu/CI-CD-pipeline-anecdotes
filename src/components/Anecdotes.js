@@ -22,7 +22,7 @@ const AnecdoteList = () => {
 
 
 
-	const vote = async (anecdote) => {
+	const vote = (anecdote) => {
 		dispatch(voteAnecdote(anecdote))
 		dispatch(setupNotification('you voted \'' + anecdote.content + '\' ', 5))
 	}

@@ -86,5 +86,11 @@
       ],
       "@babel/preset-env"
     ]
+  },
+  "cypress": {
+    "uncaughtException": false,
+    "baseUrl": "http://localhost:3000",
+    "integrationFolder": "cypress/integration",
+    "video": false
   }
 }

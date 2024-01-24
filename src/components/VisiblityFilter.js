@@ -3,18 +3,18 @@ import { useDispatch } from 'react-redux'
 
 
 const VisibilityFilter = () => {
-  const dispatch = useDispatch()
+	const dispatch = useDispatch()
 
 
-  const handleFilterChange = (event) => {
-    console.log(event.target.value)
-    dispatch(filterChange(event.target.value))
-  }
+	const handleFilterChange = (event) => {
+		console.log(event.target.value)
+		dispatch(filterChange(event.target.value))
+	}
 
  
-        return(
-           <p>filter <input onChange={handleFilterChange}/></p> 
-        )
+	return(
+		<p>filter <input onChange={handleFilterChange}/></p> 
+	)
   
   
 

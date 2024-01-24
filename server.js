@@ -1,20 +1,23 @@
-const jsonServer = require('json-server')
-const server = jsonServer.create()
-const router = jsonServer.router('db.json')
-const middlewares = jsonServer.defaults()
+const jsonServer = require('json-server');
+const server = jsonServer.create();
+const router = jsonServer.router('db.json');
+const middlewares = jsonServer.defaults();
+const cors = require('cors');
 
-server.use(middlewares)
+server.use(cors());
+server.use(middlewares);
 
 // Enable CORS for all routes
 server.use((req, res, next) => {
-	res.header('Access-Control-Allow-Origin', 'https://anecdotesrender.onrender.com') // Change '*' to the actual origin of your React app
-	res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-	next()
-})
+  res.header('Access-Control-Allow-Origin', 'https://anecdotesrender.onrender.com');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  next();
+});
 
-server.use('/api', router)
+// This line handles all routes starting with /api using the json-server router
+server.use('/api', router);
 
-const PORT = process.env.PORT || 3001
+const PORT = process.env.PORT || 3001;
 server.listen(PORT, () => {
-	console.log(`JSON Server is running on port ${PORT}`)
-})
+  console.log(`JSON Server is running on port ${PORT}`);
+});

@@ -17,6 +17,6 @@ describe('anecdote app', function () {
   
 		cy.contains('create new').should('be.visible')
 
-		cy.contains('virhe!!!').should('be.visible') //lisätty virhe notifikaatiota varten
+		//cy.contains('virhe!!!').should('be.visible') //lisätty virhe notifikaatiota varten
 	})
 })

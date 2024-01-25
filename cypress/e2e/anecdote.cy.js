@@ -12,10 +12,11 @@ describe('anecdote app', function () {
 	
 
 	it('front page can be opened', { retries: 2 }, () => {
-		// Wait for the "Anecdotes" element to be visible
+
 		cy.contains('Anecdotes').should('be.visible')
   
-		// Wait for the "create new" element to be visible
 		cy.contains('create new').should('be.visible')
+
+		//cy.contains('virhe!!!').should('be.visible') //lisätty virhe notifikaatiota varten
 	})
 })

@@ -30,7 +30,7 @@ module.exports = {
 		'react',
 		'jest',
 		'react-hooks',
-		'import'  // Added the import plugin here
+		'import'  
 	],
 	'rules': {
 		'react-hooks/rules-of-hooks': 'error',
@@ -53,7 +53,7 @@ module.exports = {
 			'error',
 			'never'
 		],
-		'import/no-anonymous-default-export': 'error',  // Explicitly set the rule
+		'import/no-anonymous-default-export': 'error', 
 	},
 	'settings': {
 		'react': {

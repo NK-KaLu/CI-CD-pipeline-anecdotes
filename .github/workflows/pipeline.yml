@@ -57,3 +57,55 @@ jobs:
     env:
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       DEFAULT_BUMP: patch
+
+  notify_discord_deploy:
+    runs-on: ubuntu-20.04
+    needs: deploy
+    steps:
+      - name: Send Discord notification on success
+        uses: rjstone/discord-webhook-notify@v1
+        if: ${{ success() }}
+        with:
+          severity: info
+          description: to https://anecdotesrender.onrender.com/
+          details: Deployment Succeeded!
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
+      - name: Send Discord notification on failure
+        uses: rjstone/discord-webhook-notify@v1
+        if: ${{ failure() }}
+        with:
+          severity: error
+          details: |
+            Build failed for commit [${{ github.sha }}]
+            **Commit details:**
+            - **Message:**  ${{ github.event.pull_request.title }}
+            - **Committer:** ${{ github.event.pull_request.user.login }}
+            - **Commit date:** $(TZ='Europe/Helsinki' date -d "${{ github.event.pull_request.updated_at }}" +%Y-%m-%d\ %H:%M:%S)"
+          text: Build failed!
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+  notify_discord_simple_deployment_pipeline:
+    runs-on: ubuntu-20.04
+    needs: simple_deployment_pipeline
+    if: ${{ always() && contains(needs.*.result, 'failure') }}
+    steps:
+      - name: Logging
+        run: |
+          echo "Merge Commit Message: ${{ github.event.pull_request.title }}"
+          echo "Author Name: ${{ github.event.pull_request.user.login }}"
+          merge_commit_date="$(TZ='Europe/Helsinki' date -d "${{ github.event.pull_request.updated_at }}" +%Y-%m-%d\ %H:%M:%S)"
+          echo "Merge Commit Date: $merge_commit_date"
+          echo "MERGE_COMMIT_DATE=${merge_commit_date}" >> $GITHUB_ENV
+
+      - name: Send Discord notification on failure
+        uses: rjstone/discord-webhook-notify@v1
+        with:
+          severity: error
+          details: |
+            Build failed for commit [${{ github.sha }}]
+            **Commit details:**
+            - **Message:**  ${{ github.event.pull_request.title }}
+            - **Committer:** ${{ github.event.pull_request.user.login }}
+            - **Commit date:** ${{ env.MERGE_COMMIT_DATE }}
+          text: Build failed !
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK_URL }}
